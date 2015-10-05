@@ -49,13 +49,12 @@ Dialog for attaching a record to a person.
         font-family: Arial;
       }
       
-      paper-button {
+      #save {
         background-color: var(--paper-blue-500);
         color: #fff;
-        margin: 0;
       }
       
-      paper-button[disabled] {
+      #save[disabled] {
         background-color: var(--paper-blue-200);
       }
     </style>
@@ -80,8 +79,9 @@ Dialog for attaching a record to a person.
         <label>Describe the Record (Notes)</label>
         <textarea value="{{notes::change}}" placeholder="Example: Hugh S. Smith Family Page 7. Lines 23-27. Arbroath, Scotland. UK Census 1841 Father: Robert Smith. Mother: Helen Strachen. Children: Hugh Sidley Smith, Robert Smith."></textarea>
       </div>
-      <div>
-        <paper-button id="save" on-click="save">{{_saveButtonText(saving)}}</paper-button>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Close</paper-button>
+        <paper-button id="save" on-click="save">{{_saveButtonText(saving, saved)}}</paper-button>
       </div>
     </paper-dialog>
   </template>
@@ -115,6 +115,12 @@ Dialog for attaching a record to a person.
       },
       
       saving: {
+        type: Boolean,
+        readOnly: true,
+        value: false
+      },
+      
+      saved: {
         type: Boolean,
         readOnly: true,
         value: false
@@ -156,8 +162,8 @@ Dialog for attaching a record to a person.
       }).then(function(response){
           
         // Hide loading indicator and show success message
-        self.$.save.disabled = false;
         self._setSaving(false);
+        self._setSaved(true);
         
       }).catch(function(error){
         console.error(error.stack);
@@ -165,8 +171,12 @@ Dialog for attaching a record to a person.
       
     },
     
-    _saveButtonText: function(saving){
-      return saving ? 'Saving...' : 'Save';
+    _saveButtonText: function(saving, saved){
+      if(saving)
+        return 'Saving...';
+      if(saved)
+        return 'Saved';
+      return 'Save';
     }
     
   });
