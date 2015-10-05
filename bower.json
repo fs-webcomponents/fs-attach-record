@@ -1,0 +1,32 @@
+{
+  "name": "fs-attach-record",
+  "version": "0.1.0",
+  "authors": [
+    "Justin York"
+  ],
+  "description": "Dialog for attaching a record to a person in the tree.",
+  "keywords": [
+    "web-component",
+    "polymer",
+    "FamilySearch"
+  ],
+  "main": "fs-attach-record.html",
+  "license": "MIT",
+  "homepage": "https://github.com/fs-webcomponents/fs-attach-record/",
+  "ignore": [
+    "/.*",
+    "/test/"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0",
+    "fs-client": "fs-webcomponents/fs-client#~0.1.9",
+    "paper-button": "PolymerElements/paper-button#~1.0.6",
+    "paper-dialog": "PolymerElements/paper-dialog#~1.0.2",
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#~1.0.1",
+    "fs-person-chip": "fs-webcomponents/fs-person-chip#~0.1.2"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "fs-signin": "fs-webcomponents/fs-signin#~0.1.6"
+  }
+}

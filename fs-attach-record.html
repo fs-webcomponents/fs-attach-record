@@ -1,0 +1,126 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../fs-person-chip/fs-person-chip.html">
+<link rel="import" href="../paper-dialog/paper-dialog.html">
+<link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+<!--
+Dialog for attaching a record to a person.
+
+<fs-attach-record title="S.S. Death Index"
+  citation="United States Social Security Death Index"
+  notes="Social Security Death Index"
+  url="http://search.findmypast.com/record?id=123"
+  person-id="LZK2-KKB">
+</fs-attach-record>
+    
+@group FamilySearch Elements
+@element fs-attach-record
+@demo demo/index.html
+-->
+
+<dom-module id="fs-attach-record">
+  <template>
+    <style>
+      paper-dialog {
+        min-width: 500px;
+      }
+      
+      .header {
+        padding-bottom: 16px;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 16px;
+      }
+      
+      .input-group {
+        margin: 16px 0px;
+      }
+      
+      label {
+        display: block;
+      }
+      
+      input, textarea {
+        display: block;
+        width: 100%;
+        padding: 4px;
+        border: 1px solid #bbb;
+        box-sizing: border-box;
+        font-family: Arial;
+      }
+      
+      paper-button {
+        background-color: var(--paper-blue-500);
+        color: #fff;
+        margin: 0;
+      }
+    </style>
+    <fs-client name="[[clientName]]"></fs-client>
+    <paper-dialog modal>
+      <div class="header">
+        <fs-person-chip person-id="[[personId]]"></fs-person-chip>
+      </div>
+      <div class="input-group">
+        <label>Source Title</label>
+        <input type="text" value="{{title}}" placeholder="Example: England, Death Certificate of Hugh S. Smith - (1832-1912)">
+      </div>
+      <div class="input-group">
+        <label>Web Page (Link to the Record)</label>
+        <input type="text" value="{{url}}" placeholder="Example: http://www.uk1841census.com/census_online.htm">
+      </div>
+      <div class="input-group">
+        <label>Where the Record Is Found (Citation)</label>
+        <textarea placeholder="Example: UK Census, 1841, Arbroath, Perth, Scotland. Population schedule. Dwelling address. Federal archive. Digital Image">{{citation}}</textarea>
+      </div>
+      <div class="input-group">
+        <label>Describe the Record (Notes)</label>
+        <textarea placeholder="Example: Hugh S. Smith Family Page 7. Lines 23-27. Arbroath, Scotland. UK Census 1841 Father: Robert Smith. Mother: Helen Strachen. Children: Hugh Sidley Smith, Robert Smith.">{{notes}}</textarea>
+      </div>
+      <div>
+        <paper-button>Save</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    
+    is: 'fs-attach-record',
+    
+    properties: {
+      
+      title: {
+        type: String,
+        value: ''
+      },
+      
+      citation: {
+        type: String,
+        value: ''
+      },
+      
+      notes: {
+        type: String,
+        value: ''
+      },
+      
+      url: {
+        type: String,
+        value: ''
+      },
+      
+    },
+    
+    open: function(){
+      this.$$('paper-dialog').open();
+    },
+    
+    save: function(){
+      // Show loading indicator
+      // Create source description
+      // Attach source description to person by creating source ref
+      // Hide loading indicator and show success message
+    }
+    
+  });
+</script>
