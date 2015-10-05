@@ -81,7 +81,7 @@ Dialog for attaching a record to a person.
       </div>
       <div class="buttons">
         <paper-button dialog-dismiss>Close</paper-button>
-        <paper-button id="save" on-click="save">{{_saveButtonText(saving, saved)}}</paper-button>
+        <paper-button id="save" on-click="save" disabled disabled$="{{_disabled(person, saving, saved)}}">{{_saveButtonText(saving, saved)}}</paper-button>
       </div>
     </paper-dialog>
   </template>
@@ -177,6 +177,10 @@ Dialog for attaching a record to a person.
       if(saved)
         return 'Saved';
       return 'Save';
+    },
+    
+    _disabled: function(person, saving, saved){
+      return typeof person === 'undefined' || saving || saved;
     }
     
   });
