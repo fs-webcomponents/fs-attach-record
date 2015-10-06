@@ -6,41 +6,22 @@
     <title>fs-attach-record Demo</title>
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
     <link rel="import" href="../../fs-client/fs-client.html">
-    <link rel="import" href="../../fs-signin/fs-signin.html">
     <link rel="import" href="../fs-attach-record.html">
     <link rel="import" href="../../paper-styles/demo-pages.html">
   </head>
   <body unresolved>
-    <style>
-      .buttons {
-        margin-top: 32px;
-      }
-    </style>
 
-    <fs-client id="client" client-id="a02j00000099Mc2AAE" redirect-uri="/" environment="sandbox" save-access-token></fs-client>
-    <fs-signin></fs-signin>
+    <fs-client client-id="a02j00000099Mc2AAE" redirect-uri="/" environment="sandbox" save-access-token></fs-client>
     
-    <fs-attach-record id="attach" person-id="KWCF-GK5"></fs-attach-record>
-    <fs-attach-record id="prefilled" person-id="KWCF-GK5" 
+    <h3>Empty</h3>
+    <fs-attach-record person-id="KWCF-GK5"></fs-attach-record>
+    
+    <h3>Pre-Filled</h3>
+    <fs-attach-record person-id="KWCF-GK5" 
       title="S.S. Death Index"
       citation="United States Social Security Death Index"
       notes="Social Security Death Index"
       url="http://search.findmypast.com/record?id=123"></fs-attach-record>
-    
-    <div class="buttons">
-      <paper-button id="attach-btn">Attach</paper-button>
-      <paper-button id="prefilled-btn">Pre-Filled</paper-button>
-    </div>
-    
-    <script>
-      document.getElementById('attach-btn').addEventListener('click', function(){
-        document.getElementById('attach').open();
-      });
-      
-      document.getElementById('prefilled-btn').addEventListener('click', function(){
-        document.getElementById('prefilled').open();
-      });
-    </script>
 
   </body>
 </html>
