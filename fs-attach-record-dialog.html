@@ -1,6 +1,7 @@
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../fs-person-behavior/fs-person-behavior.html">
 <link rel="import" href="../fs-person-chip/fs-person-chip.html">
+<link rel="import" href="../fs-source-attachments/fs-source-attachments.html">
 <link rel="import" href="../paper-dialog/paper-dialog.html">
 <link rel="import" href="../paper-dialog-scrollable/paper-dialog-scrollable.html">
 
@@ -24,12 +25,6 @@ Dialog for attaching a record to a person.
     <style>
       paper-dialog {
         min-width: 500px;
-      }
-      
-      .header {
-        padding-bottom: 16px;
-        border-bottom: 1px solid #ddd;
-        margin-bottom: 16px;
       }
       
       .input-group {
@@ -60,25 +55,30 @@ Dialog for attaching a record to a person.
     </style>
     <fs-client name="[[clientName]]" on-authenticated-changed="loadPerson"></fs-client>
     <paper-dialog modal>
-      <div class="header">
-        <fs-person-chip person="[[person]]"></fs-person-chip>
-      </div>
-      <div class="input-group">
-        <label>Source Title</label>
-        <input type="text" value="{{title::change}}" placeholder="Example: England, Death Certificate of Hugh S. Smith - (1832-1912)">
-      </div>
-      <div class="input-group">
-        <label>Web Page (Link to the Record)</label>
-        <input type="text" value="{{url::change}}" placeholder="Example: http://www.uk1841census.com/census_online.htm">
-      </div>
-      <div class="input-group">
-        <label>Where the Record Is Found (Citation)</label>
-        <textarea value="{{citation::change}}" placeholder="Example: UK Census, 1841, Arbroath, Perth, Scotland. Population schedule. Dwelling address. Federal archive. Digital Image"></textarea>
-      </div>
-      <div class="input-group">
-        <label>Describe the Record (Notes)</label>
-        <textarea value="{{notes::change}}" placeholder="Example: Hugh S. Smith Family Page 7. Lines 23-27. Arbroath, Scotland. UK Census 1841 Father: Robert Smith. Mother: Helen Strachen. Children: Hugh Sidley Smith, Robert Smith."></textarea>
-      </div>
+      <h2>Attach A Source To:</h2>
+      <fs-person-chip person="[[person]]"></fs-person-chip>
+      <paper-dialog-scrollable>
+        <div class="attachments">
+          <h2>This Source Is Already Attached To:</h2>
+          <fs-source-attachments url="[[url]]"></fs-source-attachments>
+        </div>
+        <div class="input-group">
+          <label>Source Title</label>
+          <input type="text" value="{{title::input}}" placeholder="Example: England, Death Certificate of Hugh S. Smith - (1832-1912)">
+        </div>
+        <div class="input-group">
+          <label>Web Page (Link to the Record)</label>
+          <input type="text" value="{{url::input}}" placeholder="Example: http://www.uk1841census.com/census_online.htm">
+        </div>
+        <div class="input-group">
+          <label>Where the Record Is Found (Citation)</label>
+          <textarea value="{{citation::input}}" placeholder="Example: UK Census, 1841, Arbroath, Perth, Scotland. Population schedule. Dwelling address. Federal archive. Digital Image"></textarea>
+        </div>
+        <div class="input-group">
+          <label>Describe the Record (Notes)</label>
+          <textarea value="{{notes::input}}" placeholder="Example: Hugh S. Smith Family Page 7. Lines 23-27. Arbroath, Scotland. UK Census 1841 Father: Robert Smith. Mother: Helen Strachen. Children: Hugh Sidley Smith, Robert Smith."></textarea>
+        </div>
+      </paper-dialog-scrollable>
       <div class="buttons">
         <paper-button dialog-dismiss>Close</paper-button>
         <paper-button id="save" on-click="save" disabled disabled$="{{_disabled(person, saving, saved)}}">{{_saveButtonText(saving, saved)}}</paper-button>
