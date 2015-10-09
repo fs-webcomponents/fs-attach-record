@@ -27,8 +27,9 @@
       }
     </style>
     <fs-client name="[[clientName]]"></fs-client>
-    <fs-attach-record-dialog id="dialog" person-id="[[personId]]" title="{{title}}" citation="{{citation}}" notes="{{notes}}" url="{{url}}"></fs-attach-record-dialog>
-    <paper-button on-click="open">Connect to FamilySearch</paper-button>
+    <fs-attach-record-dialog id="dialog" person-id="[[personId]]" title="{{title}}" citation="{{citation}}"
+      notes="{{notes}}" url="{{url}}" already-attached="{{alreadyAttached}}"></fs-attach-record-dialog>
+    <paper-button on-click="open">{{_buttonText(alreadyAttached)}}</paper-button>
   </template>
 </dom-module>
 
@@ -57,6 +58,11 @@
       url: {
         type: String,
         value: ''
+      },
+      
+      alreadyAttached: {
+        type: Boolean,
+        value: false
       }
       
     },
@@ -82,6 +88,10 @@
         });
         $client.signIn();
       }
+    },
+    
+    _buttonText: function(alreadyAttached){
+      return alreadyAttached ? 'Connected to FamilySearch' : 'Connect to FamilySearch';
     }
     
   });
