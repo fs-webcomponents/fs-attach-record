@@ -78,6 +78,10 @@ Dialog for attaching a record to a person.
           <label>Describe the Record (Notes)</label>
           <textarea value="{{notes::input}}" placeholder="Example: Hugh S. Smith Family Page 7. Lines 23-27. Arbroath, Scotland. UK Census 1841 Father: Robert Smith. Mother: Helen Strachen. Children: Hugh Sidley Smith, Robert Smith."></textarea>
         </div>
+        <div class="input-group">
+          <label>Reason to Attach Source</label>
+          <textarea value="{{reason::input}}" placeholder="Explain why you attached this source to this person."></textarea>
+        </div>
       </paper-dialog-scrollable>
       <div class="buttons">
         <paper-button dialog-dismiss>Close</paper-button>
@@ -110,6 +114,11 @@ Dialog for attaching a record to a person.
       },
       
       url: {
+        type: String,
+        value: ''
+      },
+      
+      reason: {
         type: String,
         value: ''
       },
@@ -163,7 +172,7 @@ Dialog for attaching a record to a person.
         citation: self.citation,
         title: self.title,
         text: self.notes
-      }).then(function(response){
+      }, self.reason).then(function(response){
         
         // Hide loading indicator and show success message
         self._setSaving(false);
