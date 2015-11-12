@@ -156,30 +156,18 @@ Dialog for attaching a record to a person.
       // Show loading status
       self.$.save.disabled = true;
       self._setSaving(true);
-      
-      var person = self.person,
-          client = self.getClient();
-      
-      // Create source description
-      var sourceDescription = client.createSourceDescription({
-        about: self.url
-      });
-          
-      sourceDescription.setTitle(self.title);
-      sourceDescription.setCitation(self.citation);
-      sourceDescription.setText(self.notes);
-      sourceDescription.save().then(function(response){
-        
-        // Attach source description to person by creating source ref
-        var sourceRef = client.createSourceRef();
-        sourceRef.setSourceDescription(sourceDescription);
-        return sourceRef.save(person.getLink('source-references').href);
+
+      // Create and attach source
+      self.person.addSource({
+        about: self.url,
+        citation: self.citation,
+        title: self.title,
+        text: self.notes
       }).then(function(response){
-          
+        
         // Hide loading indicator and show success message
         self._setSaving(false);
         self._setSaved(true);
-        
       }).catch(function(error){
         console.error(error.stack);
       });
