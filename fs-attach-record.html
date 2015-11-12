@@ -28,7 +28,7 @@
     </style>
     <fs-client name="[[clientName]]"></fs-client>
     <fs-attach-record-dialog id="dialog" person-id="[[personId]]" title="{{title}}" citation="{{citation}}"
-      notes="{{notes}}" url="{{url}}" already-attached="{{alreadyAttached}}"></fs-attach-record-dialog>
+      notes="{{notes}}" url="{{url}}" reason="{{reason}}" already-attached="{{alreadyAttached}}"></fs-attach-record-dialog>
     <paper-button on-click="open">{{_buttonText(alreadyAttached)}}</paper-button>
   </template>
 </dom-module>
@@ -56,6 +56,11 @@
       },
       
       url: {
+        type: String,
+        value: ''
+      },
+      
+      reason: {
         type: String,
         value: ''
       },

@@ -54,33 +54,38 @@ Dialog for attaching a record to a person.
       }
     </style>
     <fs-client name="[[clientName]]" on-authenticated-changed="loadPerson"></fs-client>
-    <paper-dialog modal>
+    <paper-dialog modal on-iron-overlay-closed="_dialogClosed">
       <h2>{{_titleText(alreadyAttached)}}</h2>
       <fs-person-chip person="[[person]]"></fs-person-chip>
       <paper-dialog-scrollable>
-        <div class="attachments" hidden$="{{!_showAttachedList(alreadyAttached, _attachedPersonIds)}}">
-          <h2>This Source Is Already Attached To:</h2>
-          <fs-source-attachments url="[[url]]" person-ids="{{_attachedPersonIds}}"></fs-source-attachments>
+        <div hidden$="{{saved}}">
+          <div class="attachments" hidden$="{{!_showAttachedList(alreadyAttached, _attachedPersonIds)}}">
+            <h2>This Source Is Already Attached To:</h2>
+            <fs-source-attachments url="[[url]]" person-ids="{{_attachedPersonIds}}"></fs-source-attachments>
+          </div>
+          <div class="input-group">
+            <label>Source Title</label>
+            <input type="text" value="{{title::input}}" placeholder="Example: England, Death Certificate of Hugh S. Smith - (1832-1912)">
+          </div>
+          <div class="input-group">
+            <label>Web Page (Link to the Record)</label>
+            <input type="text" value="{{url::input}}" placeholder="Example: http://www.uk1841census.com/census_online.htm">
+          </div>
+          <div class="input-group">
+            <label>Where the Record Is Found (Citation)</label>
+            <textarea value="{{citation::input}}" placeholder="Example: UK Census, 1841, Arbroath, Perth, Scotland. Population schedule. Dwelling address. Federal archive. Digital Image"></textarea>
+          </div>
+          <div class="input-group">
+            <label>Describe the Record (Notes)</label>
+            <textarea value="{{notes::input}}" placeholder="Example: Hugh S. Smith Family Page 7. Lines 23-27. Arbroath, Scotland. UK Census 1841 Father: Robert Smith. Mother: Helen Strachen. Children: Hugh Sidley Smith, Robert Smith."></textarea>
+          </div>
+          <div class="input-group">
+            <label>Reason to Attach Source</label>
+            <textarea value="{{reason::input}}" placeholder="Explain why you attached this source to this person."></textarea>
+          </div>
         </div>
-        <div class="input-group">
-          <label>Source Title</label>
-          <input type="text" value="{{title::input}}" placeholder="Example: England, Death Certificate of Hugh S. Smith - (1832-1912)">
-        </div>
-        <div class="input-group">
-          <label>Web Page (Link to the Record)</label>
-          <input type="text" value="{{url::input}}" placeholder="Example: http://www.uk1841census.com/census_online.htm">
-        </div>
-        <div class="input-group">
-          <label>Where the Record Is Found (Citation)</label>
-          <textarea value="{{citation::input}}" placeholder="Example: UK Census, 1841, Arbroath, Perth, Scotland. Population schedule. Dwelling address. Federal archive. Digital Image"></textarea>
-        </div>
-        <div class="input-group">
-          <label>Describe the Record (Notes)</label>
-          <textarea value="{{notes::input}}" placeholder="Example: Hugh S. Smith Family Page 7. Lines 23-27. Arbroath, Scotland. UK Census 1841 Father: Robert Smith. Mother: Helen Strachen. Children: Hugh Sidley Smith, Robert Smith."></textarea>
-        </div>
-        <div class="input-group">
-          <label>Reason to Attach Source</label>
-          <textarea value="{{reason::input}}" placeholder="Explain why you attached this source to this person."></textarea>
+        <div hidden$="{{!saved}}">
+          <h3>The source has been attached.</h3>
         </div>
       </paper-dialog-scrollable>
       <div class="buttons">
@@ -177,6 +182,7 @@ Dialog for attaching a record to a person.
         // Hide loading indicator and show success message
         self._setSaving(false);
         self._setSaved(true);
+        self._setAlreadyAttached(true);
       }).catch(function(error){
         console.error(error.stack);
       });
@@ -205,6 +211,11 @@ Dialog for attaching a record to a person.
     
     _showAttachedList: function(alreadyAttached, _attachedPersonIds){
       return !alreadyAttached && _attachedPersonIds.length > 0;
+    },
+    
+    _dialogClosed: function(){
+      console.log('closed');
+      this._setSaved(false);
     }
     
   });
