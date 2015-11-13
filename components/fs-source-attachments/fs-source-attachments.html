@@ -1,0 +1,115 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../fs-client/fs-client.html">
+<link rel="import" href="../fs-behavior/fs-behavior.html">
+<link rel="import" href="../fs-person-chip/fs-person-chip.html">
+
+<!--
+List persons that a source (URL) is attached to.
+
+Basic example:
+
+    <fs-source-attachments url="https://domain.com/source/url"></fs-source-attachments>
+
+@group FamilySearch Elements
+@element fs-source-attachments
+@demo demo/index.html
+-->
+<dom-module id="fs-source-attachments">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+      
+      fs-person-chip {
+        margin: 8px 0;
+      }
+    </style>
+    <fs-client name="[[clientName]]" on-authenticated-changed="_urlChanged"></fs-client>
+    <template is="dom-repeat" items="{{personIds}}">
+      <fs-person-chip person-id="{{item}}" clientName="[[clientName]]"></fs-person-chip>
+    </template>
+  </template>
+</dom-module>
+
+<script>
+(function(){
+  
+  Polymer({
+
+    is: 'fs-source-attachments',
+    
+    properties: {
+      
+      url: {
+        type: String,
+        notify: true,
+        value: '',
+        observer: '_urlChanged'
+      },
+      
+      personIds: {
+        type: Array,
+        notify: true,
+        readOnly: true,
+        value: function(){
+          return [];
+        }
+      }
+      
+    },
+
+    behaviors: [FSBehavior],
+    
+    _urlChanged: function(){
+      if(this.url && this.isAuthenticated()){
+        this.debounce('fs-source-attachments-load', function(){
+          this._load();
+        }, 400);
+      } else {
+        this._setPersonIds([]);
+      }
+    },
+    
+    _load: function(){
+      var self = this;
+      self.getClient().getSourceAttachments(this.url).then(function(response){
+        
+        // https://groups.google.com/a/ldsmail.net/d/msg/FSDN/Pg_VyWNYlzs/BECXG0nnBwAJ
+        // Urls are not matched exactly so we enforce exact matching here. First
+        // we gather a list of source Ids that actually match. If we found any
+        // then we compare the source Ids against source refs to get a list of
+        // persons that the matching sources are attached to.
+        
+        var matchingSourceIds = response.getSourceDescriptions().filter(function(sourceDescription){
+          return sourceDescription.getAbout() === self.url;
+        }).map(function(sourceDescription){
+          return sourceDescription.getId();
+        });
+        
+        var matchingPersonIds = [],
+            personRefs = response.getPersonSourceRefs();
+        matchingSourceIds.forEach(function(sourceId){
+          personRefs.forEach(function(ref){
+            if(ref.getDescription().indexOf(sourceId) !== -1){
+              matchingPersonIds.push(ref.getAttachedEntityId());
+            }
+          });
+        });
+        
+        self._setPersonIds(uniq(matchingPersonIds));
+      });
+    }
+    
+  });
+
+  // http://stackoverflow.com/questions/9229645/remove-duplicates-from-javascript-array
+  function uniq(a) {
+    var seen = {};
+    return a.filter(function(item) {
+      return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    });
+  }
+  
+}());
+</script>

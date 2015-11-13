@@ -1,0 +1,45 @@
+<script>
+  /**
+   * `FSBehavior` makes it easy to use an SDK client in another element.
+   * 
+   * @polymerBehavior
+   */
+  var FSBehavior = {
+    
+    properties: {
+      
+      /**
+       * Optional name of the sdk client to use.
+       */
+      clientName: {
+        type: String,
+        value: 'default',
+        reflectToAttribute: true
+      }
+      
+    },
+    
+    /**
+     * Get the SDK instance.
+     */
+    getClient: function(){
+      var clientElement = this.$$('fs-client');
+      if(clientElement){
+        return clientElement.client;
+      }
+    },
+    
+    /**
+     * Returns true of the client is authenticated; returns false otherwise.
+     */
+    isAuthenticated: function(){
+      var clientElement = this.$$('fs-client');
+      if(clientElement){
+        return clientElement.authenticated;
+      } else {
+        return false;
+      }
+    }
+    
+  };
+</script>

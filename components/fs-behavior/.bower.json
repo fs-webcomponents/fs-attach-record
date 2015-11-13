@@ -1,0 +1,35 @@
+{
+  "name": "fs-behavior",
+  "version": "0.1.5",
+  "description": "Shared fs component behavior",
+  "homepage": "https://github.com/fs-webcomponents/fs-behavior",
+  "main": "fs-behavior.html",
+  "authors": [
+    "Justin York"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "/.*"
+  ],
+  "keywords": [
+    "web-component",
+    "web-components",
+    "polymer",
+    "familysearch"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.0.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0"
+  },
+  "_release": "0.1.5",
+  "_resolution": {
+    "type": "version",
+    "tag": "0.1.5",
+    "commit": "29792873658842ca5037826ab22c57ebc750864d"
+  },
+  "_source": "git://github.com/fs-webcomponents/fs-behavior.git",
+  "_target": "~0.1.4",
+  "_originalSource": "fs-webcomponents/fs-behavior"
+}

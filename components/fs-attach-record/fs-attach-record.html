@@ -1,0 +1,103 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../fs-behavior/fs-behavior.html">
+<link rel="import" href="fs-attach-record-dialog.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<!--
+"Connect to FamilySearch" button for showing the dialog for attaching a record to a person.
+
+    <fs-attach-record title="S.S. Death Index"
+      citation="United States Social Security Death Index"
+      notes="Social Security Death Index"
+      url="http://search.findmypast.com/record?id=123"
+      person-id="LZK2-KKB">
+    </fs-attach-record>
+    
+@group FamilySearch Elements
+@element fs-attach-record
+@demo demo/index.html
+-->
+
+<dom-module id="fs-attach-record">
+  <template>
+    <style>
+      paper-button {
+        background-color: var(--paper-blue-500);
+        color: #fff;
+      }
+    </style>
+    <fs-client name="[[clientName]]"></fs-client>
+    <fs-attach-record-dialog id="dialog" person-id="[[personId]]" title="{{title}}" citation="{{citation}}"
+      notes="{{notes}}" url="{{url}}" reason="{{reason}}" already-attached="{{alreadyAttached}}"></fs-attach-record-dialog>
+    <paper-button on-click="open">{{_buttonText(alreadyAttached)}}</paper-button>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    
+    is: 'fs-attach-record',
+    
+    properties: {
+      
+      title: {
+        type: String,
+        value: ''
+      },
+      
+      citation: {
+        type: String,
+        value: ''
+      },
+      
+      notes: {
+        type: String,
+        value: ''
+      },
+      
+      url: {
+        type: String,
+        value: ''
+      },
+      
+      reason: {
+        type: String,
+        value: ''
+      },
+      
+      alreadyAttached: {
+        type: Boolean,
+        value: false
+      }
+      
+    },
+    
+    behaviors: [FSBehavior],
+    
+    open: function(){
+      
+      var dialog = this.$.dialog;
+      
+      // Open dialog if authenticated
+      if(this.isAuthenticated()){
+        dialog.open();
+      }
+      
+      // Begin auth if not authenticated
+      else {
+        var $client = this.$$('fs-client');
+        $client.addEventListener('authenticated-changed', function(event){
+          if(event.detail.value){
+            dialog.open();
+          }
+        });
+        $client.signIn();
+      }
+    },
+    
+    _buttonText: function(alreadyAttached){
+      return alreadyAttached ? 'Connected to FamilySearch' : 'Connect to FamilySearch';
+    }
+    
+  });
+</script>

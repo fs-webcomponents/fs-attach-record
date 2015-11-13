@@ -1,0 +1,229 @@
+<link rel="import" href="../polymer/polymer.html">
+<script src="https://cdn.jsdelivr.net/familysearch-javascript-sdk/2.3/familysearch-javascript-sdk.min.js"></script> 
+
+<script>
+  // Wrap in a function so we don't pollute the global scope.
+  (function(){
+    
+    /**
+     * Service for managing instances of the FamilySearch SDK
+     */
+    var Clients = {
+      
+      _defaultName: 'default',
+      
+      /**
+       * Map of sdk instances
+       */
+      _clients: {},
+      
+      /**
+       * Add a client.
+       * 
+       * @param {Object} FamilySearch SDK instance
+       * @param {String} [name]
+       */
+      addClient: function(client, name){
+        name = this._setDefaultName(name);
+        var clientConfig = {
+          client: client,
+          observers: []
+        };
+        this._clients[name] = clientConfig;
+      },
+      
+      /**
+       * Get a client object.
+       *
+       * @param {String} [name]
+       * @return {Object} FamilySearch SDK instance
+       */
+      getClient: function(name){
+        name = this._setDefaultName(name);
+        if(this._clients[name]){
+          return this._clients[name].client;
+        }
+      },
+      
+      /**
+       * Add an observer to a client
+       * 
+       * @param {Object} observer
+       * @param {String} name
+       */
+      addObserver: function(observer, name){
+        name = this._setDefaultName(name);
+        if(this._clients[name]){
+          this._clients[name].observers.push(observer);
+        }
+      },
+      
+      /**
+       * Notify observers that the authentication state changed
+       * 
+       * @param {String} [name]
+       */
+      notify: function(name){
+        name = this._setDefaultName(name);
+        if(this._clients[name]){
+          var authenticated = this._clients[name].client.hasAccessToken(),
+              observers = this._clients[name].observers;
+          for(var i = 0; i < observers.length; i++){
+            observers[i]._setAuthenticated(authenticated);
+          }
+        }
+      },
+      
+      /**
+       * Return the default if name isn't defined
+       */
+      _setDefaultName: function(name){
+        if(typeof name === 'undefined'){
+          return this._defaultName;
+        } else {
+          return name;
+        }
+      }
+    };
+    
+    /**
+     * `fs-client` is used to setup an SDK instance. It allows for multiple instances
+     * to be created but also gracefully handles the more common case where you
+     * only have one.
+     * 
+     * ##### Example
+     * 
+     *     <fs-client></fs-client>
+     */
+    Polymer({
+      
+      is: 'fs-client',
+      
+      properties: {
+        
+        /**
+         * The client ID (app key) you rceived from FamilySearch
+         */
+        clientId: String,
+        
+        /**
+         * The redirect URI for OAuth
+         */
+        redirectUri: String,
+        
+        /**
+         * The environment. `production`, `sandbox`, or `staging`.
+         */
+        environment: {
+          type: String,
+          value: 'sandbox'
+        },
+        
+        /**
+         * Whether the access token should be saved and loaded from cookies.
+         */
+        saveAccessToken: {
+          type: Boolean,
+          value: false
+        },
+        
+        /**
+         * Optional name for this client instance. If you use multiple instances then
+         * components which require an instance can configured with the client
+         * name so they use the proper client instance.
+         */
+        name: {
+          type: String,
+          value: 'default'
+        },
+        
+        /**
+         * The FamilySearch SDK object
+         */
+        client: {
+          type: Object,
+          readOnly: true
+        },
+        
+        /**
+         * Whether the client is authenticated
+         */
+        authenticated: {
+          type: Boolean,
+          readOnly: true,
+          notify: true,
+          value: false
+        }
+        
+      },
+      
+      ready: function(){
+        this._setClient(Clients.getClient(this.name));
+        
+        // If a client hasn't already been registered with that name
+        // then create a new one.
+        if(typeof this.client === 'undefined'){
+          
+          // Allow relative URIs to be specified. This makes it easy to create
+          // demos that may be run both locally and on the web on multiple hosts.
+          if(this.redirectUri && this.redirectUri.indexOf('/') === 0){
+            this.redirectUri = qualifyURL(this.redirectUri);
+          }
+          
+          // We don't do validation of the input because the SDK will do validation
+          // and throw errors when appropriate
+          this._setClient(new FamilySearch({
+            client_id: this.clientId,
+            redirect_uri: this.redirectUri,
+            environment: this.environment,
+            save_access_token: this.saveAccessToken
+          }));
+          
+          Clients.addClient(this.client, this.name);
+        }
+        
+        Clients.addObserver(this, this.name);
+        
+        // Set initial authenticated state
+        this._setAuthenticated(this.client.hasAccessToken());
+      },
+      
+      /**
+       * Begin the OAuth2 process for signing in (authenticating) with FamilySearch.
+       * Call this method instead of directly using the client so that this
+       * component can accurately track the state of authentication and notify
+       * other components of changes.
+       */
+      signIn: function(){
+        var self = this;
+        if(self.client){
+          self.client.getAccessToken().then(function(){
+            Clients.notify(self.name);
+          }, function(){
+            // TODO: error event?
+          });
+        }
+      },
+      
+      /**
+       * Sign out the user (end their session).
+       * Call this method instead of directly using the client so that this
+       * component can accurately track the state of authentication and notify
+       * other components of changes.
+       */
+      signOut: function(){
+        this.client.invalidateAccessToken();
+        Clients.notify(this.name);
+      }
+      
+    });
+    
+    // http://stackoverflow.com/q/470832
+    function qualifyURL(url) {
+    	var a = document.createElement('a');
+    	a.href = url;
+    	return a.href;
+    }
+    
+  })();
+</script>
