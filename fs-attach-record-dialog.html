@@ -52,15 +52,29 @@ Dialog for attaching a record to a person.
       #save[disabled] {
         background-color: var(--paper-blue-200);
       }
+      
+      .person {
+        overflow: auto; 
+      }
+      
+      .change {
+        float: right;
+      }
     </style>
     <fs-client name="[[clientName]]" on-authenticated-changed="loadPerson"></fs-client>
     <paper-dialog modal on-iron-overlay-closed="_dialogClosed">
       <h2>{{_titleText(alreadyAttached)}}</h2>
-      <fs-person-chip person="[[person]]"></fs-person-chip>
+      <div class="person">
+        <div class="change">
+          <label>Change Person</label>
+          <input type="text" value="{{personId::input}}" placeholder="Enter a person's ID">
+        </div>
+        <fs-person-chip person="[[person]]"></fs-person-chip>
+      </div>
       <paper-dialog-scrollable>
         <div hidden$="{{saved}}">
           <div class="attachments" hidden$="{{!_showAttachedList(alreadyAttached, _attachedPersonIds)}}">
-            <h2>This Source Is Already Attached To:</h2>
+            <h2>This Source Is Already Attached To</h2>
             <fs-source-attachments url="[[url]]" person-ids="{{_attachedPersonIds}}"></fs-source-attachments>
           </div>
           <div class="input-group">
@@ -102,6 +116,11 @@ Dialog for attaching a record to a person.
     is: 'fs-attach-record-dialog',
     
     properties: {
+      
+      personId: {
+        type: String,
+        observer: '_processAttachedPersonIds'
+      },
       
       title: {
         type: String,
@@ -182,7 +201,7 @@ Dialog for attaching a record to a person.
         // Hide loading indicator and show success message
         self._setSaving(false);
         self._setSaved(true);
-        self._setAlreadyAttached(true);
+        self.push('_attachedPersonIds', self.person.getId());
       }).catch(function(error){
         console.error(error.stack);
       });
@@ -206,7 +225,7 @@ Dialog for attaching a record to a person.
     },
     
     _titleText: function(alreadyAttached){
-      return alreadyAttached ? 'This Source Is Already Attached To:' : 'Attach A Source To:';
+      return alreadyAttached ? 'This Source Is Already Attached' : 'Attach A Source';
     },
     
     _showAttachedList: function(alreadyAttached, _attachedPersonIds){
