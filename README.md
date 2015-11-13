@@ -18,7 +18,7 @@ Add the element:
 
 ## Installation
 
-Choose one of the following three methods installation methods. All three methods
+Choose one of the following installation methods. All three methods
 share the same usage instructions documented above.
 
 ### Bower
